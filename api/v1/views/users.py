@@ -29,3 +29,27 @@ def users():
         storage.new(user)
         storage.save()
         return jsonify(user.to_dict()), 201
+
+
+@app_views.route('/users/<user_id>', methods=['GET', 'DELETE', 'PUT'],
+                 strict_slashes=False)
+def solo_user(user_id):
+    """handles routes for specific user obj"""
+    user = storage.get(User, user_id)
+    if not user:
+        abort(404)
+    if request.method == 'GET':
+        return jsonify(user.to_dict())
+    elif request.method == 'DELETE':
+        storage.delete(user)
+        storage.save()
+        return jsonify({}), 200
+    elif request.method == 'PUT':
+        update_dict = request.get_json()
+        if not update_dict:
+            abort(400, "Not a JSON")
+        for key in update_dict:
+            if key not in ['created_at', 'id', 'updated_at', 'email']:
+                setattr(user, key, update_dict[key])
+        user.save()
+        return jsonify(user.to_dict()), 200
