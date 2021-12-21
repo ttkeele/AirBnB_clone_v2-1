@@ -91,25 +91,28 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self):
         """Test that get is properly returning an object"""
-        obj = State(name="A")
-        obj_id = obj.to_dict()["id"]
-        storage.new(obj)
-        self.assertEqual(storage.get("State", obj_id), obj)
-        self.assertTrue(type(storage.get("State", obj_id)),
-                        models.state.State)
-        self.assertTrue(type(storage.get("Invalid_class", obj_id)),
-                        None)
+        from models import storage
+        dummy = State(name="Test")
+        dummy.save()
+        get_dummy = storage.get(State, dummy.id)
+        self.assertTrue(dummy is get_dummy, "did not get dummy")
+
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):
         """Test that count is counting the number of objects in storage"""
-        num = storage.count()
-        obj = State(name="A")
-        storage.new(obj)
-        self.assertEqual(storage.count(), num + 1)
-        num = storage.count("State")
-        obj = State(name="A")
-        storage.new(obj)
-        self.assertEqual(storage.count("State"), num + 1)
-        self.assertTrue(type(storage.count()), int)
-        self.assertTrue(type(storage.count("State")), int)
+        from models import storage
+        start = storage.count()
+        dummy = State(name="Test")
+        dummy.save()
+        end = storage.count()
+        self.assertEqual(start + 1, end, "Count didn't update")
+
+    def test_count_class(self):
+        """Tests count with a specific class"""
+        from models import storage
+        start = storage.count(State)
+        dummy = State(name="Test")
+        dummy.save()
+        end = storage.count(State)
+        self.assertEqual(start + 1, end, "Count didn't update")
