@@ -40,3 +40,36 @@ def places_in_city(city_id):
         storage.new(new_object)
         storage.save()
         return jsonify(new_object.to_dict()), 201
+
+
+@app_views.route('/places/<place_id>', methods=['GET', 'DELETE', 'PUT'])
+def place_ids(place_id):
+    """
+    place routes
+    """
+    place_obj = storage.get('Place', place_id)
+    if place_obj is None:
+        abort(404, 'Not found')
+
+    if request.method == 'GET':
+        return jsonify(place_obj.to_dict())
+
+    if request.method == 'DELETE':
+        storage.delete(place_obj)
+        storage.save()
+        return jsonify({}), 200
+
+    if request.method == 'PUT':
+        req_json = request.get_json()
+        if req_json is None:
+            abort(400, 'Not a JSON')
+        for key in req_json:
+            if key not in ['id',
+                           'user_id',
+                           'city-id',
+                           'created_at',
+                           'updated_at']:
+                setattr(place_obj, key, req_json[key])
+        storage.new(place_obj)
+        storage.save()
+        return jsonify(place_obj.to_dict()), 200
