@@ -8,7 +8,8 @@ from models import storage
 from models.place import Place
 
 
-@app_views.route('/cities/<city_id>/places', methods=['GET', 'POST'])
+@app_views.route('/cities/<city_id>/places', methods=['GET', 'POST']
+                 strict_slashes=False)
 def places_in_city(city_id):
     """
     place routes
@@ -42,7 +43,8 @@ def places_in_city(city_id):
         return jsonify(new_object.to_dict()), 201
 
 
-@app_views.route('/places/<place_id>', methods=['GET', 'DELETE', 'PUT'])
+@app_views.route('/places/<place_id>', methods=['GET', 'DELETE', 'PUT']
+                 strict_slashes=False)
 def place_ids(place_id):
     """
     place routes
