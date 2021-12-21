@@ -113,3 +113,29 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    def test_get(self):
+        """tests get"""
+        from models import storage
+        dummy = State(name="Test")
+        dummy.save()
+        get_dummy = storage.get(State, dummy.id)
+        self.assertTrue(dummy is get_dummy, "did not get dummy")
+
+    def test_count(self):
+        """tests count method for no cls"""
+        from models import storage
+        start = storage.count()
+        dummy = State(name="Test")
+        dummy.save()
+        end = storage.count()
+        self.assertEqual(start + 1, end, "didn't update")
+
+    def test_count_cls(self):
+        """Tests count with class"""
+        from models import storage
+        start = storage.count(State)
+        dummy = State(name="Test")
+        dummy.save()
+        end = storage.count(State)
+        self.assertEqual(start + 1, end, "Count didn't update")
