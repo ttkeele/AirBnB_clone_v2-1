@@ -21,7 +21,7 @@ classes = {"Amenity": Amenity, "City": City,
 
 
 class DBStorage:
-    """interaacts with the MySQL database"""
+    """mysql communicatio"""
     __engine = None
     __session = None
 
@@ -41,7 +41,7 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """query on the current database session"""
+        """query on session"""
         new_dict = {}
         for clss in classes:
             if cls is None or cls is classes[clss] or cls is clss:
@@ -74,3 +74,14 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
+
+    def get(self, cls, id):
+        """returns object from storage"""
+        if type(cls) != str:
+            cls = cls.__name__
+        return self.all(cls).get("{}.{}".format(cls, id))
+
+    def count(self, cls=None):
+        """counts number of objs in class from storage;
+        if no class determined then counts all objects"""
+        return len(self.all(cls))
