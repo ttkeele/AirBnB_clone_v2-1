@@ -9,7 +9,7 @@ from models import storage
 
 
 @app_views.route("/status", strict_slashes=False)
-def status():
+def get_status():
     """
     status of api
     """
@@ -17,7 +17,7 @@ def status():
 
 
 @app_views.route("/stats", strict_slashes=False)
-def stats():
+def get_stats():
     """
     Retrieves the number of each object by type
     """
