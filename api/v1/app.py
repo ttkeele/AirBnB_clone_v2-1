@@ -29,5 +29,9 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    app.run(host=getenv("HBNB_API_HOST"), port=getenv("HBNB_API_PORT"),
-            threaded=True)
+    """
+    run on host='0.0.0.0' and port='5000'
+    """
+    host = getenv("HBNB_API_HOST", '0.0.0.0')
+    port = getenv("HBNB_API_PORT", '5000')
+    app.run(host=host, port=port,threaded=True)
